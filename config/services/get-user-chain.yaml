@@ -1,0 +1,32 @@
+services:
+  app.chain.get_user.element.get_from_memecached:
+    class: App\Chain\GetUser\Element\GetFromMemcached
+    arguments:
+      $providerService: '@App\Service\MemcachedService'
+      $logger: '@monolog.logger'
+
+  app.chain.get_user.element.get_from_redis:
+    class: App\Chain\GetUser\Element\GetFromRedis
+    arguments:
+      $providerService: '@App\Service\RedisService'
+      $logger: '@monolog.logger'
+
+  app.chain.get_user.element.get_from_database:
+    class: App\Chain\GetUser\Element\GetFromDatabase
+    arguments:
+      $providerService: '@App\Service\DatabaseService'
+      $logger: '@monolog.logger'
+
+  app.chain.get_user.element.get_from_inactive_database:
+    class: App\Chain\GetUser\Element\GetFromInactiveDatabase
+    arguments:
+      $providerService: '@App\Service\InactiveDatabaseService'
+      $logger: '@monolog.logger'
+
+  app.chain.get_user:
+    class: App\Chain\GetUser\Chain
+    arguments:
+      - '@app.chain.get_user.element.get_from_memecached'
+      - '@app.chain.get_user.element.get_from_redis'
+      - '@app.chain.get_user.element.get_from_database'
+      - '@app.chain.get_user.element.get_from_inactive_database'
